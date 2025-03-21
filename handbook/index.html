@@ -34,7 +34,7 @@
 
 
     <script type="module">
-        import { useLaboratoryApi } from './apis/laboratory-handbook.api.js';
+        import { useHandbookApi } from './apis/handbook.api.js';
         import { encodeHtmlString } from './utils/string.util.js';
 
         (async () => {
@@ -47,7 +47,7 @@
                 </td></tr>
             `;
 
-            const { getHandbookFiles } = useLaboratoryApi();
+            const { getHandbookFiles } = useHandbookApi();
             tbodyEl.innerHTML = loadingStr;
             const handbookFilesResponse = await getHandbookFiles('', { limit: 5 });
             tbodyEl.innerHTML = '';
