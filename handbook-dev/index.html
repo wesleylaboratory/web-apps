@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wesley Laboratory Handbook (DEV)</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
+    <link rel="stylesheet" href="./libs/bootstrap/5.3.0/bootstrap.min.css">
+    <link rel="stylesheet" href="./styles/index.css">
+    <script src="./libs/bootstrap/5.3.0/bootstrap.bundle.min.js"></script>
+    <script src="./libs/dayjs/1.11.13/dayjs.min.js"></script>
 </head>
 <body>
    <h1>Wesley Laboratory Handbook (DEV)</h1>
@@ -18,12 +20,13 @@
 
 
 
-   <script>
+   <script type="module">
+    import { useLaboratoryApi } from './apis/laboratory-handbook.api.js';
+
     (async () => {
-        const filesListEl = document.querySelector('#files');
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbxlOksq0mEwh1ve6yBnxjEO1W_ai-ypOGvl7da9YQ_WZ3LSyisbTTXln5ayCq086-yy/exec';
-        const 
-    
+        const { getHandbookFiles } = useLaboratoryApi();
+        const handbookItems = await getHandbookFiles('', { limit: 5 });
+        console.debug(handbookItems);
     })();
    </script>
 </body>
