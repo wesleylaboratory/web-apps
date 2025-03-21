@@ -16,7 +16,7 @@
 
 <body>
     <div class="container my-5">
-        <h1 class="text-center mb-5">Wesley Laboratory Handbook</h1>
+        <h1 class="font-weight-bold text-center mb-5">Wesley Laboratory Handbook</h1>
 
         <div class="table-responsive">
             <table id="handbook-files" class="table table-striped table-bordered">
@@ -47,7 +47,7 @@
                 for (const file of handbookFilesResponse.files) {
                     const tr = document.createElement('tr');
                     const encodedStr = `
-                        <td><a href="${file.url}" target="_blank">${encodeHtmlString(file.name)}</a></td>
+                        <td><a href="${file.url}">${encodeHtmlString(file.name)}</a></td>
                         <td>${dayjs(file.lastUpdated).format(dateFormat)}</td>
                     `;
 
