@@ -39,12 +39,12 @@
 
         (async () => {
             const { getHandbookFiles } = useLaboratoryApi();
-            const handbookFiles = await getHandbookFiles('', { limit: 5 });
+            const handbookFilesResponse = await getHandbookFiles('', { limit: 5 });
             const dateFormat = 'MMM D, YYYY, h:mm A';
 
             const tbodyEl = document.querySelector('#handbook-files tbody');
-            if (tbodyEl != null) {
-                for (const file of handbookFiles) {
+            if (tbodyEl != null && Array.isArray(handbookFilesResponse.files)) {
+                for (const file of handbookFilesResponse.files) {
                     const tr = document.createElement('tr');
                     const encodedStr = `
                         <td><a href="${file.url}" target="_blank">${encodeHtmlString(file.name)}</a></td>
