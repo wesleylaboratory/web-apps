@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} IHandbook
+ * @typedef {Object} IHandbookFile
  * @property {string} id
  * @property {string} name
  * @property {string} url

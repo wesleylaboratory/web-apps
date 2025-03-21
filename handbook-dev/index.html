@@ -1,33 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wesley Laboratory Handbook (DEV)</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
     <link rel="stylesheet" href="./libs/bootstrap/5.3.0/bootstrap.min.css">
     <link rel="stylesheet" href="./styles/index.css">
     <script src="./libs/bootstrap/5.3.0/bootstrap.bundle.min.js"></script>
     <script src="./libs/dayjs/1.11.13/dayjs.min.js"></script>
 </head>
+
 <body>
-   <h1>Wesley Laboratory Handbook (DEV)</h1>
+    <div class="container my-5">
+        <h1 class="text-center mb-5">Wesley Laboratory Handbook (DEV)</h1>
 
-   <table class="table table-striped table-hover">
-    ...
-  </table>
+        <div class="table-responsive">
+            <table id="handbook-files" class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Modified</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 
 
 
-   <script type="module">
-    import { useLaboratoryApi } from './apis/laboratory-handbook.api.js';
+    <script type="module">
+        import { useLaboratoryApi } from './apis/laboratory-handbook.api.js';
+        import { encodeHtmlString } from './utils/string.util.js';
 
-    (async () => {
-        const { getHandbookFiles } = useLaboratoryApi();
-        const handbookItems = await getHandbookFiles('', { limit: 5 });
-        console.debug(handbookItems);
-    })();
-   </script>
+        (async () => {
+            const { getHandbookFiles } = useLaboratoryApi();
+            const handbookFiles = await getHandbookFiles('', { limit: 5 });
+            const dateFormat = 'MMM D, YYYY, h:mm A';
+
+            const tbodyEl = document.querySelector('#handbook-files tbody');
+            if (tbodyEl != null) {
+                for (const file of handbookFiles) {
+                    const tr = document.createElement('tr');
+                    const encodedStr = `
+                        <td><a href="${file.url}" target="_blank">${encodeHtmlString(file.name)}</a></td>
+                        <td>${dayjs(file.lastUpdated).format(dateFormat)}</td>
+                    `;
+
+                    tr.innerHTML = encodedStr;
+                    tbodyEl.appendChild(tr);
+                }
+            }
+        })();
+    </script>
 </body>
+
 </html>

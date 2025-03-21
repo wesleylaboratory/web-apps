@@ -7,7 +7,7 @@ export function useLaboratoryApi() {
      * @returns {boolean}
      */
     async function getHandbookFiles(query, options = null) {
-        /** @type {Array<IHandbook>} */
+        /** @type {Array<IHandbookFile>} */
         let handbookRes = [];
 
         try {
