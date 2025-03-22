@@ -4,24 +4,27 @@ export function useHandbookApi() {
     /**
      * @param {string} [query]
      * @param {{limit?: number, page?: number, sort?: number, direction?: string, type?: string}} [options]
-     * @returns {boolean}
+     * @returns {Promise<Array<IHandbookFile>>}
      */
-    async function getHandbookFiles(query, options = null) {
-        /** @type {Array<IHandbookFile>} */
-        let handbookRes = [];
-
+    async function getHandbookFiles(query = '', options = null) {
         try {
-            const params = new URLSearchParams({
-                query: (query ?? ''), 
-                ...(options ?? {})
-            }).toString();
-            const res = await fetch(`${baseUrl}?${params}`);
-            handbookRes = res.json();
-        } catch (e) {
-            // Probably show a bootstrap toast message when this happens
-            console.error(e);
-        } finally {
+            const urlParams = new URLSearchParams();
+            urlParams.append('query', query);
+            
+            if (options != null) {
+                Object.entries(options).forEach(([key, value]) => {
+                    if (value != null) urlParams.append(key, String(value));
+                });
+            }
+
+            const res = await fetch(`${baseUrl}?${urlParams.toString()}`);
+
+            /** @type {Array<IHandbookFile>} */
+            const handbookRes = await res.json();
             return handbookRes;
+        } catch (e) {
+            console.error(e);
+            return [];
         }
     }
 
