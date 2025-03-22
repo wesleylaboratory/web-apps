@@ -4,7 +4,7 @@ export function useHandbookApi() {
     /**
      * @param {string} [query]
      * @param {{limit?: number, page?: number, sort?: number, direction?: string, type?: string}} [options]
-     * @returns {Promise<Array<IHandbookFile>>}
+     * @returns {Promise<IHandbookResponse | undefined>}
      */
     async function getHandbookFiles(query = '', options = null) {
         try {
@@ -19,12 +19,12 @@ export function useHandbookApi() {
 
             const res = await fetch(`${baseUrl}?${urlParams.toString()}`);
 
-            /** @type {Array<IHandbookFile>} */
+            /** @type {IHandbookResponse} */
             const handbookRes = await res.json();
             return handbookRes;
         } catch (e) {
             console.error(e);
-            return [];
+            return;
         }
     }
 

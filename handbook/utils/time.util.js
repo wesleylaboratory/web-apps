@@ -1,3 +1,5 @@
+import { isNullOrEmpty, hashString } from "./string.util";
+
 /**
  *
  * @param {Function} callback
