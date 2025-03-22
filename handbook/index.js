@@ -1,4 +1,3 @@
-import dayjs from './libs/dayjs/1.11.13/dayjs.min.js';
 import { useHandbookApi } from './apis/handbook.api.js';
 import { encodeHtmlString } from './utils/string.util.js';
 
