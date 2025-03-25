@@ -1,33 +1,81 @@
 import { useHandbookApi } from './apis/handbook.api.js';
 import { encodeHtmlString } from './utils/string.util.js';
 
+let allFiles = [];
+
 (async () => {
-    const tbodyEl = document.querySelector('#handbook-files tbody');
+    const unorderedListElem = document.querySelector('#handbook-files');
+    const searchElem = document.querySelector('#file-search');
+    searchElem.addEventListener('input', (evt) => {
+        /** @type {any} */
+        const inputEvent = evt;
+        const searchTerm = inputEvent.target.value?.trim();
+
+        const filterList = filteredListBySearch(searchTerm, allFiles);
+        updateDomList(filterList, unorderedListElem);
+    });
+
     const loadingStr = `
-        <tr><td colspan="2" class="text-center">
-            <div class="spinner-border" role="status">
+        <li class="d-block w-100 h-100 text-center mt-3">
+            <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-        </td></tr>
+        </li>
     `;
-
-    const { getHandbookFiles } = useHandbookApi();
-    tbodyEl.innerHTML = loadingStr;
-    const handbookFilesResponse = await getHandbookFiles('', { limit: 5 });
-    tbodyEl.innerHTML = '';
-
-    if (tbodyEl != null && Array.isArray(handbookFilesResponse.files)) {
-        const dateFormat = 'MMM D, YYYY, h:mm A';
-
-        for (const file of handbookFilesResponse.files) {
-            const tr = document.createElement('tr');
-            const encodedStr = `
-                <td><a href="${file.url}">${encodeHtmlString(file.name)}</a></td>
-                <td>${dayjs(file.lastUpdated).format(dateFormat)}</td>
-            `;
-
-            tr.innerHTML = encodedStr;
-            tbodyEl.appendChild(tr);
-        }
-    }
+    unorderedListElem.innerHTML = loadingStr;
+    allFiles = await loadFiles();
+    unorderedListElem.innerHTML = '';
 })();
+
+
+// HELPERS
+
+function filteredListBySearch(value, list) {
+    if (value == null || value.trim() === '') {
+        return [];
+    }
+
+    return list.filter(l => {
+        if (value.length === 1) {
+            return l.name != null && l.name.trim().toLowerCase().startsWith(value);
+        } else {
+           return l.name != null && l.name.trim().toLowerCase().includes(value.toLowerCase());
+        }
+    });
+}
+
+function updateDomList(filteredList, unorderedListElem) {
+    if (unorderedListElem == null) {
+        return;
+    }
+
+    unorderedListElem.innerHTML = '';
+
+    for (const file of filteredList) {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item', 'list-group-item-action');
+
+        const encodedStr = `
+            <a href="${file.url}" class="text-truncate d-block w-100 h-100" target="_blank">
+                ${encodeHtmlString(file.name)}
+            </a>
+        `;
+
+        li.innerHTML = encodedStr;
+        unorderedListElem.appendChild(li);
+    }
+}
+
+/**
+ * @returns {Promise<Array<IHandbookFile>>}
+ */
+async function loadFiles() {
+    const { getHandbookFiles } = useHandbookApi();
+    const handbookFilesResponse = await getHandbookFiles('', { limit: 2000 });
+
+    if (handbookFilesResponse != null) {
+        return handbookFilesResponse.files.toSorted((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return [];
+}

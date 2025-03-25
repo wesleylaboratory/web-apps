@@ -1,4 +1,4 @@
-import { isNullOrEmpty, hashString } from "./string.util";
+import { isNullOrEmpty, hashString } from "./string.util.js";
 
 /**
  *
