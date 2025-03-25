@@ -13,18 +13,23 @@ let allFiles = [];
 
         const filterList = filteredListBySearch(searchTerm, allFiles);
         updateDomList(filterList, unorderedListElem);
+
+        const noResultsElem = document.querySelector('#no-results');
+        if (filterList.length <= 0 && searchTerm.length > 0) {
+            noResultsElem.classList.remove('d-none');
+        } else {
+            noResultsElem.classList.add('d-none');
+        }
     });
 
-    const loadingStr = `
-        <li class="d-block w-100 h-100 text-center mt-3">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </li>
-    `;
-    unorderedListElem.innerHTML = loadingStr;
+    const searchIcon = document.querySelector('#file-search-icon');
+    const searchIconLoading = document.querySelector('#file-search-icon-loading');
+
+    searchIcon.classList.add('d-none');
+    searchIconLoading.classList.remove('d-none');
     allFiles = await loadFiles();
-    unorderedListElem.innerHTML = '';
+    searchIconLoading.classList.add('d-none');
+    searchIcon.classList.remove('d-none');
 })();
 
 
@@ -37,7 +42,7 @@ function filteredListBySearch(value, list) {
 
     return list.filter(l => {
         if (value.length === 1) {
-            return l.name != null && l.name.trim().toLowerCase().startsWith(value);
+            return l.name != null && l.name.trim().toLowerCase().substr(0, 1) === value.toLowerCase();
         } else {
            return l.name != null && l.name.trim().toLowerCase().includes(value.toLowerCase());
         }
