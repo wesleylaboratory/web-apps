@@ -31,15 +31,17 @@ let allFiles = [];
 // HELPERS
 
 function filteredListBySearch(value, list) {
-    if (value == null || value.trim() === '') {
+    if (value == null || value.trim() === '' || !Array.isArray(list) || list.length <= 0) {
         return [];
     }
 
-    return list.filter(l => {
-        if (value.length === 1) {
-            return l.name != null && l.name.trim().toLowerCase().startsWith(value);
+    const valueLowercase = value.trim().toLowercase();
+    return list.filter(listItem => {
+        const listItemNameLowercase = listItem?.name?.trim().toLowerCase() ?? '';
+        if (valueLowercase.length === 1) {
+            return listItemNameLowercase.substr(0, 1) === valueLowercase;
         } else {
-           return l.name != null && l.name.trim().toLowerCase().includes(value.toLowerCase());
+           return listItemNameLowercase.includes(valueLowercase);
         }
     });
 }
