@@ -56,7 +56,7 @@ function updateDomList(filteredList, unorderedListElem) {
         li.classList.add('list-group-item', 'list-group-item-action');
 
         const encodedStr = `
-            <a href="${file.url}" class="text-truncate d-block w-100 h-100" target="_blank">
+            <a target="_blank" href="${file.url}" class="text-truncate d-block w-100 h-100">
                 ${encodeHtmlString(file.name)}
             </a>
         `;
