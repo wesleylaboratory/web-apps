@@ -75,11 +75,11 @@ function updateDomList(filteredList, unorderedListElem) {
  * @returns {Promise<Array<IHandbookFile>>}
  */
 async function loadFiles() {
-    const { getHandbookFiles } = useHandbookApi();
-    const handbookFilesResponse = await getHandbookFiles('', { limit: 2000 });
+    const { getHandbookFilesFromIndex } = useHandbookApi();
+    const handbookFilesArrayResponse = await getHandbookFilesFromIndex();
 
-    if (handbookFilesResponse != null) {
-        return handbookFilesResponse.files.toSorted((a, b) => a.name.localeCompare(b.name));
+    if (Array.isArray(handbookFilesArrayResponse)) {
+        return handbookFilesArrayResponse.toSorted((a, b) => a.name.localeCompare(b.name));
     }
 
     return [];
