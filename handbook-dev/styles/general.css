@@ -1,7 +1,0 @@
-body {
-    font-family: 'Manrope', sans-serif;
-    background: linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96)),
-        url('../assets/pattern.svg');
-    background-position: center;
-    background-size: 200px;
-}
