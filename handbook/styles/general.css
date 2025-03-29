@@ -1,6 +1,8 @@
 body {
+    --bg-color-overlay: rgba(255, 255, 255, 0.955);
     font-family: 'Manrope', sans-serif;
-    background: linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96)),
+    background: 
+        linear-gradient(var(--bg-color-overlay), var(--bg-color-overlay)), 
         url('../assets/pattern.svg');
     background-position: center;
     background-size: 200px;
