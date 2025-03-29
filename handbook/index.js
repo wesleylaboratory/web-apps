@@ -79,7 +79,7 @@ async function loadFiles() {
     const handbookFilesArrayResponse = await getHandbookFilesFromIndex();
 
     if (Array.isArray(handbookFilesArrayResponse)) {
-        return handbookFilesArrayResponse.toSorted((a, b) => a.name.localeCompare(b.name));
+        return handbookFilesArrayResponse.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
     }
 
     return [];
