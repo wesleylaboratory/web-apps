@@ -70,7 +70,7 @@ function updateDomList(filteredList, unorderedListElem) {
 
     for (const file of filteredList) {
         const li = document.createElement('li');
-        li.classList.add('list-group-item', 'list-group-item-action');
+        li.classList.add('list-group-item', 'list-group-item-action', 'p-0');
 
         const formattedDate = file.lastUpdated ? new Date(file.lastUpdated).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -80,15 +80,10 @@ function updateDomList(filteredList, unorderedListElem) {
             minute: 'numeric'
         }) : undefined;
         const encodedStr = `
-            <a target="_blank" href="${file.url}" class="d-flex flex-row text-decoration-none text-black align-items-center gap-2">
-                <div class="d-flex flex-column">
-                    <span class="fw-bold">${encodeHtmlString(file.name)}</span>
-                    <small class="fw-lighter text-secondary" style="font-size: 13px">${'Updated on ' + formattedDate}</small>
-                </div>
+            <a target="_blank" href="${file.url}" class="d-block text-decoration-none fw-bold text-black px-3 py-2">
+                ${encodeHtmlString(file.name)}
             </a>
         `;
-
-        // <span class="material-symbols-outlined text-secondary">docs</span>
 
         li.innerHTML = encodedStr;
         unorderedListElem.appendChild(li);
