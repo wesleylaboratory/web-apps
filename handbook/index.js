@@ -12,7 +12,7 @@ let allFiles = [];
         const searchTerm = inputEvent.target.value?.trim();
 
         const filterList = filteredListBySearch(searchTerm, allFiles);
-        updateDomList(filterList, unorderedListElem);
+        updateDomList(filterList, unorderedListElem, searchTerm);
 
         const resultsCountElem = document.querySelector('#results-count');
         if (searchTerm.length <= 0) {
@@ -42,20 +42,24 @@ let allFiles = [];
 // HELPERS
 
 function filteredListBySearch(value, list) {
-    if (value == null || value.trim() === '') {
-        return [];
-    }
+    if (!value?.trim()) return [];
 
-    return list.filter(l => {
-        if (value.length === 1) {
-            return l.name != null && l.name.trim().toLowerCase().substr(0, 1) === value.toLowerCase();
-        } else {
-            return l.name != null && l.name.trim().toLowerCase().includes(value.toLowerCase());
+    const loweredTrimmedSearch = value.toLowerCase().trim();
+
+    return list.filter(item => {
+        const loweredTrimmedName = item.name?.trim().toLowerCase();
+        if (!loweredTrimmedName) return false;
+
+        if (loweredTrimmedSearch.length === 1) {
+            return loweredTrimmedName.charAt(0) === loweredTrimmedSearch;
         }
+
+        return loweredTrimmedName.includes(loweredTrimmedSearch);
     });
 }
 
-function updateDomList(filteredList, unorderedListElem) {
+
+function updateDomList(filteredList, unorderedListElem, searchTerm) {
     if (unorderedListElem == null) {
         return;
     }
@@ -81,7 +85,7 @@ function updateDomList(filteredList, unorderedListElem) {
         }) : undefined;
         const encodedStr = `
             <a target="_blank" href="${file.url}" class="d-block text-decoration-none fw-bold text-black px-3 py-2">
-                ${encodeHtmlString(file.name)}
+                ${markMatchingText(searchTerm, encodeHtmlString(file.name))}
             </a>
         `;
 
@@ -102,4 +106,17 @@ async function loadFiles() {
     }
 
     return [];
+}
+
+
+function markMatchingText(searchTerm, textString) {
+    if (!searchTerm) return textString;
+
+    const trimmedText = textString.trim();
+    if (searchTerm.length === 1 && trimmedText.toLowerCase().charAt(0) === searchTerm.toLowerCase()) {
+        return `<mark>${trimmedText.charAt(0)}</mark>${trimmedText.slice(1)}`;
+    }
+
+    const safeTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return textString.replace(new RegExp(safeTerm, 'gi'), match => `<mark>${match}</mark>`);
 }
