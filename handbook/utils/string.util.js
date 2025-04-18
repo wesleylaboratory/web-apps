@@ -1,12 +1,5 @@
 /**
- * @param {string|null|undefined} val
- * @returns {boolean}
- */
-export function isNullOrEmpty(val) {
-    return typeof val === 'undefined' || val == null || val === '';
-}
-
-/**
+ * Html encodes string values to be safe for DOM rendering.
  * @param {string} val
  * @returns {string}
  */
@@ -18,16 +11,19 @@ export function encodeHtmlString(val) {
 }
 
 /**
- * https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#converting_a_digest_to_a_hex_string
- * @param {string} val
- * @returns {Promise<string>}
+ * Adds highlights to matching characters based on passed value.
+ * @param {string | null | undefined} val 
+ * @param {string} sourceString 
+ * @returns {string}
  */
-export async function hashString(val) {
-    const msgUint8 = new TextEncoder().encode(val); // encode as (utf-8) Uint8Array
-    const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-    const hashHex = hashArray
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join(''); // convert bytes to hex string
-    return hashHex;
+export function highlightMatchingText(val, sourceString) {
+    if (!val) return sourceString;
+
+    const trimmedText = sourceString.trim();
+    if (val.length === 1 && trimmedText.toLowerCase().charAt(0) === val.toLowerCase()) {
+        return `<mark>${trimmedText.charAt(0)}</mark>${trimmedText.slice(1)}`;
+    }
+
+    const safeTerm = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return sourceString.replace(new RegExp(safeTerm, 'gi'), match => `<mark>${match}</mark>`);
 }

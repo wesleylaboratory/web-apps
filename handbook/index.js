@@ -1,46 +1,62 @@
 import { useHandbookApi } from './apis/handbook.api.js';
-import { encodeHtmlString } from './utils/string.util.js';
-
-let allFiles = [];
+import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js';
 
 (async () => {
-    const unorderedListElem = document.querySelector('#handbook-files');
+    let allFiles = [];
+
+    // Set event listener for search input
     const searchElem = document.querySelector('#file-search');
-    searchElem.addEventListener('input', (evt) => {
-        /** @type {any} */
-        const inputEvent = evt;
-        const searchTerm = inputEvent.target.value?.trim();
+    searchElem.addEventListener('input', (evt) => onInputTrigger(evt, allFiles));
 
-        const filterList = filteredListBySearch(searchTerm, allFiles);
-        updateDomList(filterList, unorderedListElem, searchTerm);
+    // Go fetch handbook file list
+    const { getHandbookFilesFromIndex } = useHandbookApi();
+    toggleSearchLoading(true);
+    const handbookFilesArrayResponse = await getHandbookFilesFromIndex();
+    toggleSearchLoading(false);
 
-        const resultsCountElem = document.querySelector('#results-count');
-        if (searchTerm.length <= 0) {
-            resultsCountElem.classList.add('d-none');
-        } else {
-            resultsCountElem.classList.remove('d-none');
-            if (filterList.length > 0) {
-                const pluralisedResultLabel = filterList.length === 1 ? 'result' : 'results';
-                resultsCountElem.innerHTML = `${filterList.length} ${pluralisedResultLabel} found.`;
-            } else {
-                resultsCountElem.innerHTML = 'No results found matching search.';
-            }
-        }
-    });
+    allFiles = Array.isArray(handbookFilesArrayResponse) ? handbookFilesArrayResponse : [];
+    allFiles.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+})();
 
+/**
+ * Takes in input event and updates DOM
+ * @param {Event} inputEvent
+ * @returns {void}
+ */
+function onInputTrigger(inputEvent, allFiles) {
+    /** @type {any} */
+    const eventTarget = inputEvent.target;
+    const searchTerm = eventTarget.value?.trim();
+
+    const filterList = filteredListBySearch(searchTerm, allFiles);
+    updateDomList(searchTerm, filterList);
+    updateDomResultsCount(searchTerm, filterList);
+}
+
+/**
+ * Toggles search loading spinner
+ * @param {boolean} isLoading
+ * @returns {void}
+ */
+function toggleSearchLoading(isLoading) {
     const searchIcon = document.querySelector('#file-search-icon');
     const searchIconLoading = document.querySelector('#file-search-icon-loading');
 
-    searchIcon.classList.add('d-none');
-    searchIconLoading.classList.remove('d-none');
-    allFiles = await loadFiles();
-    searchIconLoading.classList.add('d-none');
-    searchIcon.classList.remove('d-none');
-})();
+    if (isLoading) {
+        searchIcon.classList.add('d-none');
+        searchIconLoading.classList.remove('d-none');
+    } else {
+        searchIconLoading.classList.add('d-none');
+        searchIcon.classList.remove('d-none');
+    }
+}
 
-
-// HELPERS
-
+/**
+ * Returns a filtered list of handbook file items based on search term.
+ * @param {string | null | undefined} value 
+ * @param {Array<IHandbookFile>} list 
+ * @returns {Array<IHandbookFile>}
+ */
 function filteredListBySearch(value, list) {
     if (!value?.trim()) return [];
 
@@ -58,12 +74,14 @@ function filteredListBySearch(value, list) {
     });
 }
 
-
-function updateDomList(filteredList, unorderedListElem, searchTerm) {
-    if (unorderedListElem == null) {
-        return;
-    }
-
+/**
+ * Manages updating the DOM with filtered list items.
+ * @param {string | null | undefined} searchTerm
+ * @param {Array<IHandbookFile>} filteredList  
+ * @returns {void}
+ */
+function updateDomList(searchTerm, filteredList) {
+    const unorderedListElem = document.querySelector('#handbook-files');
     unorderedListElem.innerHTML = '';
 
     if (filteredList.length <= 0) {
@@ -76,16 +94,9 @@ function updateDomList(filteredList, unorderedListElem, searchTerm) {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'list-group-item-action', 'p-0');
 
-        const formattedDate = file.lastUpdated ? new Date(file.lastUpdated).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
-        }) : undefined;
         const encodedStr = `
             <a target="_blank" href="${file.url}" class="d-block text-decoration-none fw-bold text-black px-3 py-2">
-                ${markMatchingText(searchTerm, encodeHtmlString(file.name))}
+                ${highlightMatchingText(searchTerm, encodeHtmlString(file.name))}
             </a>
         `;
 
@@ -95,28 +106,22 @@ function updateDomList(filteredList, unorderedListElem, searchTerm) {
 }
 
 /**
- * @returns {Promise<Array<IHandbookFile>>}
+ * Manages updating the DOM with an updated results count.
+ * @param {string | null | undefined} searchTerm
+ * @param {Array<IHandbookFile>} filteredList  
+ * @returns {void}
  */
-async function loadFiles() {
-    const { getHandbookFilesFromIndex } = useHandbookApi();
-    const handbookFilesArrayResponse = await getHandbookFilesFromIndex();
-
-    if (Array.isArray(handbookFilesArrayResponse)) {
-        return handbookFilesArrayResponse.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+function updateDomResultsCount(searchTerm, filteredList) {
+    const resultsCountElem = document.querySelector('#results-count');
+    if (searchTerm.length <= 0) {
+        resultsCountElem.classList.add('d-none');
+    } else {
+        resultsCountElem.classList.remove('d-none');
+        if (filteredList.length > 0) {
+            const pluralisedResultLabel = filteredList.length === 1 ? 'result' : 'results';
+            resultsCountElem.innerHTML = `${filteredList.length} ${pluralisedResultLabel} found.`;
+        } else {
+            resultsCountElem.innerHTML = 'No results found matching search.';
+        }
     }
-
-    return [];
-}
-
-
-function markMatchingText(searchTerm, textString) {
-    if (!searchTerm) return textString;
-
-    const trimmedText = textString.trim();
-    if (searchTerm.length === 1 && trimmedText.toLowerCase().charAt(0) === searchTerm.toLowerCase()) {
-        return `<mark>${trimmedText.charAt(0)}</mark>${trimmedText.slice(1)}`;
-    }
-
-    const safeTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return textString.replace(new RegExp(safeTerm, 'gi'), match => `<mark>${match}</mark>`);
 }
