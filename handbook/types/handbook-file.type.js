@@ -4,6 +4,5 @@
  * @property {string} name
  * @property {string} url
  * @property {string} type
- * @property {string} createdDate
  * @property {string} lastUpdated
  */
