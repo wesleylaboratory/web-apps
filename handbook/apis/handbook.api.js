@@ -2,7 +2,7 @@ export function useHandbookApi() {
     /**
      * @returns {Promise<Array<IHandbookFile>>}
      */
-    async function getHandbookFilesFromIndex() {
+    async function getAll() {
         try {
             const res = await fetch('https://raw.githubusercontent.com/wesleylaboratory/indexed-files/refs/heads/main/handbook/files.json');
 
@@ -16,6 +16,6 @@ export function useHandbookApi() {
     }
 
     return {
-        getHandbookFilesFromIndex
+        getAll
     };
 }

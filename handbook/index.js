@@ -9,9 +9,9 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
     searchElem.addEventListener('input', (evt) => onInputTrigger(evt, allFiles));
 
     // Go fetch handbook file list
-    const { getHandbookFilesFromIndex } = useHandbookApi();
+    const { getAll } = useHandbookApi();
     toggleSearchLoading(true);
-    const handbookFilesArrayResponse = await getHandbookFilesFromIndex();
+    const handbookFilesArrayResponse = await getAll();
     toggleSearchLoading(false);
 
     allFiles = Array.isArray(handbookFilesArrayResponse) ? handbookFilesArrayResponse : [];
