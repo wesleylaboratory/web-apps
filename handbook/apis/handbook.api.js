@@ -4,7 +4,7 @@ export function useHandbookApi() {
      */
     async function getAll() {
         try {
-            const res = await fetch('https://raw.githubusercontent.com/wesleylaboratory/indexed-files/refs/heads/main/handbook/files.json');
+            const res = await fetch('https://wesleylaboratory.github.io/indexed-files/handbook/files.json');
 
             /** @type {Array<IHandbookFile>} */
             const filesRes = await res.json();
@@ -19,3 +19,4 @@ export function useHandbookApi() {
         getAll
     };
 }
+
