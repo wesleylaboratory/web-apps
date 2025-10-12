@@ -45,8 +45,7 @@ function setGermImage() {
 
     const now = new Date();
     const holidayToShow = datesToCheck.find(date => now >= date.start && now <= date.end);
-    /** @type {any | undefined} */
-    const elem = document.getElementById('germ-image');
+    const elem = /** @type {HTMLImageElement | null} */ (document.getElementById('germ-image'));
 
     if (elem) {
         if (holidayToShow && elem) {
