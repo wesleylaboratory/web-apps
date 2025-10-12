@@ -25,5 +25,8 @@ export function highlightMatchingText(val, sourceString) {
     }
 
     const safeTerm = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return sourceString.replace(new RegExp(safeTerm, 'gi'), match => `<mark>${match}</mark>`);
+    const termTokens = safeTerm.split(' ').filter(t => t);
+    return termTokens.reduce((acc, token) => {
+        return acc.replace(new RegExp(token, 'gi'), match => `<mark>${match}</mark>`);
+    }, sourceString);
 }

@@ -108,7 +108,8 @@ function filteredListBySearch(value, list) {
             return loweredTrimmedName.charAt(0) === loweredTrimmedSearch;
         }
 
-        return loweredTrimmedName.includes(loweredTrimmedSearch);
+        const searchTokens = loweredTrimmedSearch.split(' ').filter(t => t);
+        return searchTokens.every(token => loweredTrimmedName.includes(token));
     });
 }
 
