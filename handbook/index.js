@@ -2,6 +2,8 @@ import { useHandbookApi } from './apis/handbook.api.js';
 import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js';
 
 (async () => {
+    setGermImage();
+    
     let allFiles = [];
 
     // Set event listener for search input
@@ -15,8 +17,45 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
     toggleSearchLoading(false);
 
     allFiles = Array.isArray(handbookFilesArrayResponse) ? handbookFilesArrayResponse : [];
-    allFiles.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+    allFiles.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 })();
+
+function setGermImage() {
+    const defaultImgSrc = './assets/germ-nobg.png';
+    const datesToCheck = [
+        {
+            holiday: 'Halloween',
+            start: new Date('October 28, 2025, 07:00 AM'),
+            end: new Date('November 01, 2025, 12:00 AM'),
+            imgSrc: './assets/germ-nobg-halloween.png'
+        },
+        {
+            holiday: 'Thanksgiving',
+            start: new Date('November 23, 2025, 12:00 AM'),
+            end: new Date('December 01, 2025, 12:00 AM'),
+            imgSrc: './assets/germ-nobg-thanksgiving.png'
+        },
+        {
+            holiday: 'Christmas',
+            start: new Date('December 25, 2025, 12:00 AM'),
+            end: new Date('December 28, 2025, 12:00 AM'),
+            imgSrc: './assets/germ-nobg-christmas.png'
+        }
+    ];
+
+    const now = new Date();
+    const holidayToShow = datesToCheck.find(date => now >= date.start && now <= date.end);
+    /** @type {any | undefined} */
+    const elem = document.getElementById('germ-image');
+
+    if (elem) {
+        if (holidayToShow && elem) {
+            elem.src = holidayToShow.imgSrc;
+        } else {
+            elem.src = defaultImgSrc;
+        }
+    }
+}
 
 /**
  * Takes in input event and updates DOM
