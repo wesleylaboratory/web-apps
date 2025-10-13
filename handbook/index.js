@@ -134,7 +134,7 @@ function updateDomList(searchTerm, filteredList) {
         li.classList.add('list-group-item', 'list-group-item-action', 'p-0');
 
         const encodedStr = `
-            <a target="_blank" href="${file.url}" class="d-block text-decoration-none fw-bold text-black px-3 py-2">
+            <a target="_blank" href="${file.url}" class="d-block text-decoration-none fw-semibold text-black px-3 py-2">
                 ${highlightMatchingText(searchTerm, encodeHtmlString(file.name))}
             </a>
         `;
@@ -158,9 +158,9 @@ function updateDomResultsCount(searchTerm, filteredList) {
         resultsCountElem.classList.remove('d-none');
         if (filteredList.length > 0) {
             const pluralisedResultLabel = filteredList.length === 1 ? 'result' : 'results';
-            resultsCountElem.innerHTML = `${filteredList.length} ${pluralisedResultLabel} found.`;
+            resultsCountElem.innerHTML = `${filteredList.length} ${pluralisedResultLabel} found`;
         } else {
-            resultsCountElem.innerHTML = 'No results found matching search.';
+            resultsCountElem.innerHTML = 'No results found';
         }
     }
 }
