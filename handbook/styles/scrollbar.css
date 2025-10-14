@@ -1,0 +1,48 @@
+:root {
+    --scrollbar: rgba(0, 0, 0, .2);
+    --scrollbar-active: rgba(0, 0, 0, .4);
+    --scrollbar-track: rgba(0, 0, 0, .05);
+
+    &.body--dark {
+        --scrollbar: rgba(255, 255, 255, .2);
+        --scrollbar-active: rgba(255, 255, 255, .25);
+        --scrollbar-track: rgba(255, 255, 255, .05);    
+    }
+
+    ::-webkit-scrollbar {
+        width: .75rem;
+        height: .75rem
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border: .125rem solid rgba(0,0,0,0);
+        background-clip: padding-box;
+        background-color: var(--scrollbar);
+        border-radius: .75rem;
+        min-height: 2rem
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+        background-color: var(--scrollbar-active)
+    }
+
+    ::-webkit-scrollbar-track {
+        background-position: center
+    }
+
+    ::-webkit-scrollbar-track:vertical {
+        background-image: linear-gradient(transparent 50%,var(--scrollbar-track) 50%);
+        background-size: .5rem .0625rem;
+        background-repeat: repeat-y
+    }
+
+    ::-webkit-scrollbar-track:horizontal {
+        background-image: linear-gradient(to right,transparent 50%,var(--scrollbar-track) 50%);
+        background-size: .0625rem .5rem;
+        background-repeat: repeat-x
+    }
+
+    ::-webkit-scrollbar-corner {
+        background: #0000
+    }
+}
