@@ -26,7 +26,6 @@ export function highlightMatchingText(val, sourceString) {
 
     const safeTerm = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const termTokens = safeTerm.split(' ').filter(t => t);
-    return termTokens.reduce((acc, token) => {
-        return acc.replace(new RegExp(token, 'gi'), match => `<mark>${match}</mark>`);
-    }, sourceString);
+    const pattern = new RegExp(`(${termTokens.join('|')})`, 'gi');
+    return sourceString.replace(pattern, match => `<mark>${match}</mark>`);
 }
