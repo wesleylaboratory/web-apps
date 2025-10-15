@@ -122,6 +122,7 @@ function filteredListBySearch(value, list) {
 function updateDomList(searchTerm, filteredList) {
     const unorderedListElem = document.querySelector('#handbook-files');
     unorderedListElem.innerHTML = '';
+    unorderedListElem.scrollTop = 0;
 
     if (filteredList.length <= 0) {
         unorderedListElem.classList.add('d-none');
