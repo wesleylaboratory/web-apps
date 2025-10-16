@@ -22,23 +22,24 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
 
 function setGermImage() {
     const defaultImgSrc = './assets/germ-nobg.png';
+    const currentYear = new Date().getFullYear();
     const datesToCheck = [
         {
             holiday: 'Halloween',
-            start: new Date('October 28, 2025, 07:00 AM'),
-            end: new Date('November 01, 2025, 12:00 AM'),
+            start: new Date(`October 28, ${currentYear}, 07:00 AM`),
+            end: new Date(`November 01, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-halloween.png'
         },
         {
             holiday: 'Thanksgiving',
-            start: new Date('November 23, 2025, 12:00 AM'),
-            end: new Date('December 01, 2025, 12:00 AM'),
+            start: new Date(`November 23, ${currentYear}, 12:00 AM`),
+            end: new Date(`December 01, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-thanksgiving.png'
         },
         {
             holiday: 'Christmas',
-            start: new Date('December 25, 2025, 12:00 AM'),
-            end: new Date('December 28, 2025, 12:00 AM'),
+            start: new Date(`December 25, ${currentYear}, 12:00 AM`),
+            end: new Date(`December 28, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-christmas.png'
         }
     ];
