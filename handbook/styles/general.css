@@ -139,9 +139,3 @@ mark {
 .shadow-custom {
     box-shadow: 0 0.3125rem 0.625rem -0.625rem rgba(0,0,0,0.3);
 }
-
-@media (min-width: 48rem) {
-    #handbook-files {
-        max-height: calc(100vh - 38.25rem);
-    }
-}
