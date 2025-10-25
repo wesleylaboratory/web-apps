@@ -26,7 +26,7 @@ function setGermImage() {
     const datesToCheck = [
         {
             holiday: 'Halloween',
-            start: new Date(`October 28, ${currentYear}, 07:00 AM`),
+            start: new Date(`October 27, ${currentYear}, 07:00 AM`),
             end: new Date(`November 01, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-halloween.png'
         },
