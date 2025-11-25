@@ -3,6 +3,7 @@
     "name": "Wesley Laboratory Handbook",
     "short_name": "Handbook",
     "scope": "/handbook/",
+    "start_url": "/handbook/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#ffffff",
