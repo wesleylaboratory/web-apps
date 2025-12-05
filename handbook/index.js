@@ -3,7 +3,7 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
 
 (async () => {
     setGermImage();
-    
+
     let allFiles = [];
 
     // Set event listener for search input
@@ -20,6 +20,10 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
     allFiles.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 })();
 
+/**
+ * Updates germ image for different holidays
+ * @returns {void}
+ */
 function setGermImage() {
     const defaultImgSrc = './assets/germ-nobg.png';
     const currentYear = new Date().getFullYear();
@@ -35,6 +39,12 @@ function setGermImage() {
             start: new Date(`November 23, ${currentYear}, 12:00 AM`),
             end: new Date(`December 01, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-thanksgiving.png'
+        },
+        {
+            holiday: 'ChristmasCountdown',
+            start: new Date(`December 01, ${currentYear}, 12:00 AM`),
+            end: new Date(`December 25, ${currentYear}, 12:00 AM`),
+            imgSrc: './assets/germ-nobg-christmas-countdown.png'
         },
         {
             holiday: 'Christmas',
@@ -54,6 +64,25 @@ function setGermImage() {
         } else {
             elem.src = defaultImgSrc;
         }
+    }
+
+
+    if (holidayToShow.holiday === 'ChristmasCountdown') {
+        const imgContainer = document.getElementById('germ-image-container');
+        const countdownContainer = document.createElement('div');
+        countdownContainer.classList.add('christmas-countdown-sign');
+        const christmasMs = new Date(`December 25, ${currentYear}, 12:00 AM`).getTime();
+        const diffMs = christmasMs - Date.now();
+        const daysTilChristmas = Math.ceil(diffMs / 1000 / 60 / 60 / 24);
+        const pluralisedDaysLabel = daysTilChristmas === 1 ? 'DAY' : 'DAYS';
+
+        countdownContainer.innerHTML = `
+            <span class="christmas-countdown-sign__days-til">${daysTilChristmas}</span>
+            <span>${pluralisedDaysLabel} 'TIL</span>
+            <span>CHRISTMAS</span>
+        `;
+
+        imgContainer.appendChild(countdownContainer);
     }
 }
 
