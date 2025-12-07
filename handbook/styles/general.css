@@ -80,7 +80,7 @@
     --bs-body-bg-rgb: 255, 255, 255;
     --bs-emphasis-color: #000;
     --bs-emphasis-color-rgb: 0, 0, 0;
-    --bs-secondary-color: rgba(33, 37, 41, 0.75);
+    --bs-secondary-color: rgba(33, 37, 41, 0.35);
     --bs-secondary-color-rgb: 33, 37, 41;
     --bs-secondary-bg: #e9ecef;
     --bs-secondary-bg-rgb: 233, 236, 239;
@@ -123,7 +123,7 @@
     --bs-form-valid-color: #198754;
     --bs-form-valid-border-color: #198754;
     --bs-form-invalid-color: #dc3545;
-    --bs-form-invalid-border-color: #dc3545
+    --bs-form-invalid-border-color: #dc3545;
 }
 
 body {
@@ -169,5 +169,11 @@ mark {
     & .christmas-countdown-sign__days-til {
         font-size: 1.375rem;
         line-height: 1.3125rem;
+    }
+}
+
+@media (min-width: 768px) {
+    #search-input {
+       padding-right: 8rem !important;
     }
 }

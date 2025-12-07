@@ -2,29 +2,89 @@ import { useHandbookApi } from './apis/handbook.api.js';
 import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js';
 
 (async () => {
-    setGermImage();
-
     let allFiles = [];
+    const searchInputId = 'search-input';
+    const filesListId = 'handbook-files-list';
+
+    // DOM elements
+    //// Required
+    const handbookFilesListEl = document.querySelector(`#${filesListId}`);
+    const searchInputEl = /** @type {HTMLInputElement | null} */ (document.querySelector(`#${searchInputId}`));
+
+    //// Other
+    const headerImgEl = /** @type {HTMLImageElement | null} */ (document.querySelector('#header-image'));
+    const resultCountLabelEl = document.querySelector('#result-count-label');
+    const clearResultsButtonEl = document.querySelector('#clear-results-button');
+    const loadingIconEl = document.querySelector('#loading-icon');
+    const errorLabelEl = /** @type {HTMLElement | null} */ (document.querySelector('#app-error-label'));
+
+    if (searchInputEl == null) {
+        showError(`Missing required element with ID: ${searchInputId}`, errorLabelEl);
+    }
+
+    if (handbookFilesListEl == null) {
+        showError(`Missing required element with ID: ${filesListId}`, errorLabelEl);
+    }
+
+    // Check for holiday and set img if needed
+    setHeaderImage(headerImgEl);
 
     // Set event listener for search input
-    const searchElem = document.querySelector('#file-search');
-    searchElem.addEventListener('input', (evt) => onInputTrigger(evt, allFiles));
+    searchInputEl.addEventListener('input', (evt) => {
+        /** @type {any} */
+        const eventTarget = evt.target;
+        const searchTerm = eventTarget.value?.trim();
+        const filterList = filteredListBySearch(searchTerm, allFiles);
+
+        updateDomList(searchTerm, filterList, handbookFilesListEl);
+        updateDomResultsCount(searchTerm, filterList, resultCountLabelEl);
+        toggleVisibility(searchTerm.length > 0, clearResultsButtonEl);
+    });
+
+    // Set event listener for clear search button
+    clearResultsButtonEl.addEventListener('click', () => {
+        searchInputEl.value = '';
+        searchInputEl.dispatchEvent(new Event('input'));
+    });
 
     // Go fetch handbook file list
     const { getAll } = useHandbookApi();
-    toggleSearchLoading(true);
-    const handbookFilesArrayResponse = await getAll();
-    toggleSearchLoading(false);
+    toggleVisibility(true, loadingIconEl);
+    const filesListRes = await getAll();
+    toggleVisibility(false, loadingIconEl);
 
-    allFiles = Array.isArray(handbookFilesArrayResponse) ? handbookFilesArrayResponse : [];
+    allFiles = Array.isArray(filesListRes) ? filesListRes : [];
     allFiles.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 })();
 
 /**
- * Updates germ image for different holidays
+ * Shows app error message
+ * @param {string} message 
+ * @param {HTMLElement | null} labelEl 
  * @returns {void}
  */
-function setGermImage() {
+function showError(message, labelEl) {
+    if (labelEl == null) {
+        console.warn('No element found for error label.');
+        return;
+    };
+
+    labelEl.innerText = message;
+    toggleVisibility(true, labelEl);
+    console.error(message);
+}
+
+/**
+ * Sets header image for different holidays
+ * @param {HTMLImageElement | null} imgEl 
+ * @returns {void}
+ */
+function setHeaderImage(imgEl) {
+    if (imgEl == null) {
+        console.warn('No element found for header image.');
+        return;
+    };
+
     const defaultImgSrc = './assets/germ-nobg.png';
     const currentYear = new Date().getFullYear();
     const datesToCheck = [
@@ -56,66 +116,58 @@ function setGermImage() {
 
     const now = new Date();
     const holidayToShow = datesToCheck.find(date => now >= date.start && now <= date.end);
-    const elem = /** @type {HTMLImageElement | null} */ (document.getElementById('germ-image'));
 
-    if (elem) {
-        if (holidayToShow && elem) {
-            elem.src = holidayToShow.imgSrc;
+    if (imgEl) {
+        if (holidayToShow && imgEl) {
+            imgEl.src = holidayToShow.imgSrc;
         } else {
-            elem.src = defaultImgSrc;
+            imgEl.src = defaultImgSrc;
         }
     }
 
-
     if (holidayToShow.holiday === 'ChristmasCountdown') {
-        const imgContainer = document.getElementById('germ-image-container');
-        const countdownContainer = document.createElement('div');
-        countdownContainer.classList.add('christmas-countdown-sign');
-        const christmasMs = new Date(`December 25, ${currentYear}, 12:00 AM`).getTime();
-        const diffMs = christmasMs - Date.now();
-        const daysTilChristmas = Math.ceil(diffMs / 1000 / 60 / 60 / 24);
-        const pluralisedDaysLabel = daysTilChristmas === 1 ? 'DAY' : 'DAYS';
-
-        countdownContainer.innerHTML = `
-            <span class="christmas-countdown-sign__days-til">${daysTilChristmas}</span>
-            <span>${pluralisedDaysLabel} 'TIL</span>
-            <span>CHRISTMAS</span>
-        `;
-
-        imgContainer.appendChild(countdownContainer);
+        setChristmasCountdownVerbiage(imgEl.parentElement);
     }
 }
 
 /**
- * Takes in input event and updates DOM
- * @param {Event} inputEvent
+ * Sets the verbiage for Christmas countdown image
+ * @param {Element} imgContainerEl 
  * @returns {void}
  */
-function onInputTrigger(inputEvent, allFiles) {
-    /** @type {any} */
-    const eventTarget = inputEvent.target;
-    const searchTerm = eventTarget.value?.trim();
+function setChristmasCountdownVerbiage(imgContainerEl) {
+    const countdownContainer = document.createElement('div');
+    countdownContainer.classList.add('christmas-countdown-sign');
+    const currentYear = new Date().getFullYear();
+    const christmasMs = new Date(`December 25, ${currentYear}, 12:00 AM`).getTime();
+    const diffMs = christmasMs - Date.now();
+    const daysTilChristmas = Math.ceil(diffMs / 1000 / 60 / 60 / 24);
+    const pluralisedDaysLabel = daysTilChristmas === 1 ? 'DAY' : 'DAYS';
+    countdownContainer.innerHTML = `
+        <span class="christmas-countdown-sign__days-til">${daysTilChristmas}</span>
+        <span>${pluralisedDaysLabel} 'TIL</span>
+        <span>CHRISTMAS</span>
+    `;
 
-    const filterList = filteredListBySearch(searchTerm, allFiles);
-    updateDomList(searchTerm, filterList);
-    updateDomResultsCount(searchTerm, filterList);
+    imgContainerEl.appendChild(countdownContainer);
 }
 
 /**
- * Toggles search loading spinner
- * @param {boolean} isLoading
+ * Toggles visibility of DOM elem
+ * @param {boolean} isVisible
+ * @param {Element | null} el
  * @returns {void}
  */
-function toggleSearchLoading(isLoading) {
-    const searchIcon = document.querySelector('#file-search-icon');
-    const searchIconLoading = document.querySelector('#file-search-icon-loading');
+function toggleVisibility(isVisible, el) {
+    if (el == null) {
+        console.warn('Could not toggle visible state. No element found.');
+        return;
+    };
 
-    if (isLoading) {
-        searchIcon.classList.add('d-none');
-        searchIconLoading.classList.remove('d-none');
+    if (isVisible) {
+        el.classList.remove('d-none');
     } else {
-        searchIconLoading.classList.add('d-none');
-        searchIcon.classList.remove('d-none');
+        el.classList.add('d-none');
     }
 }
 
@@ -149,8 +201,7 @@ function filteredListBySearch(value, list) {
  * @param {Array<IHandbookFile>} filteredList  
  * @returns {void}
  */
-function updateDomList(searchTerm, filteredList) {
-    const unorderedListElem = document.querySelector('#handbook-files');
+function updateDomList(searchTerm, filteredList, unorderedListElem) {
     unorderedListElem.innerHTML = '';
     unorderedListElem.scrollTop = 0;
 
@@ -179,19 +230,24 @@ function updateDomList(searchTerm, filteredList) {
  * Manages updating the DOM with an updated results count.
  * @param {string | null | undefined} searchTerm
  * @param {Array<IHandbookFile>} filteredList  
+ * @param {Element | null} resultsCountEl
  * @returns {void}
  */
-function updateDomResultsCount(searchTerm, filteredList) {
-    const resultsCountElem = document.querySelector('#results-count');
+function updateDomResultsCount(searchTerm, filteredList, resultsCountEl) {
+    if (resultsCountEl == null) {
+        console.warn('No element found for results count.');
+        return;
+    };
+
     if (searchTerm.length <= 0) {
-        resultsCountElem.classList.add('d-none');
+        resultsCountEl.classList.remove('d-md-block');
     } else {
-        resultsCountElem.classList.remove('d-none');
+        resultsCountEl.classList.add('d-md-block');
         if (filteredList.length > 0) {
             const pluralisedResultLabel = filteredList.length === 1 ? 'result' : 'results';
-            resultsCountElem.innerHTML = `${filteredList.length} ${pluralisedResultLabel} found`;
+            resultsCountEl.innerHTML = `${filteredList.length} ${pluralisedResultLabel}`;
         } else {
-            resultsCountElem.innerHTML = 'No results found';
+            resultsCountEl.innerHTML = 'No results';
         }
     }
 }
