@@ -45,6 +45,7 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
     clearResultsButtonEl.addEventListener('click', () => {
         searchInputEl.value = '';
         searchInputEl.dispatchEvent(new Event('input'));
+        searchInputEl.focus();
     });
 
     // Go fetch handbook file list

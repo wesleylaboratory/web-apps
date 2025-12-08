@@ -30,15 +30,15 @@
 
             <div class="d-flex flex-column gap-2" style="margin: auto; max-width: min(90vw, 56.25rem)">
                 <div class="input-group rounded-4 shadow-custom">
-                    <div class="input-group-text rounded-start-4 px-3">
+                    <div class="input-group-text bg-transparent border-0 px-3 position-absolute start-0 top-0 h-100" style="z-index: 10">
                         <span class="material-symbols-outlined text-primary fw-bold fs-3">search</span>
                     </div>
 
-                    <input id="search-input" class="form-control rounded-end-4 pe-5" style="height: 3.25rem"
+                    <input autofocus id="search-input" class="form-control rounded-5 pe-5" style="height: 3.25rem; padding-left: 3.625rem"
                         type="text" autocomplete="off" placeholder="Search for lab tests..." />
 
                     <div class="input-group-text bg-transparent border-0 p-1 position-absolute end-0 top-0 h-100"
-                        style="z-index: 5">
+                        style="z-index: 10">
                         <div id="result-count-label" class="m-auto d-none text-secondary" style="font-size: small">
                         </div>
 
@@ -50,7 +50,7 @@
                     </div>
 
                     <div id="loading-icon"
-                        class="input-group-text bg-transparent border-0 position-absolute end-0 top-0 h-100 p-3 d-none">
+                        class="input-group-text bg-transparent border-0 position-absolute end-0 top-0 h-100 p-3 d-none" style="z-index: 10">
                         <span class="spinner-border text-secondary opacity-25"
                             style="width: 1.75rem; height: 1.75rem"></span>
                     </div>
