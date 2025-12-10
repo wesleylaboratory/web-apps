@@ -215,7 +215,7 @@ function updateDomList(searchTerm, filteredList, unorderedListElem) {
         li.classList.add('list-group-item', 'list-group-item-action', 'p-0');
 
         const encodedStr = `
-            <a target="_blank" href="${file.url}" class="d-block text-decoration-none fw-semibold text-black px-3 py-2">
+            <a target="_blank" href="${file.url}" class="d-block text-decoration-none text-black px-3 py-2">
                 ${highlightMatchingText(searchTerm, encodeHtmlString(file.name))}
             </a>
         `;
