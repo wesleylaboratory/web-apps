@@ -118,16 +118,14 @@ function setHeaderImage(imgEl) {
     const now = new Date();
     const holidayToShow = datesToCheck.find(date => now >= date.start && now <= date.end);
 
-    if (imgEl) {
-        if (holidayToShow && imgEl) {
-            imgEl.src = holidayToShow.imgSrc;
-        } else {
-            imgEl.src = defaultImgSrc;
-        }
-    }
+    if (holidayToShow) {
+        imgEl.src = holidayToShow.imgSrc;
 
-    if (holidayToShow.holiday === 'ChristmasCountdown') {
-        setChristmasCountdownVerbiage(imgEl.parentElement);
+        if (holidayToShow.holiday === 'ChristmasCountdown') {
+            setChristmasCountdownVerbiage(imgEl.parentElement);
+        }
+    } else {
+        imgEl.src = defaultImgSrc;
     }
 }
 
