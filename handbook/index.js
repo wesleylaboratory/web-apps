@@ -1,5 +1,7 @@
 import { useHandbookApi } from './apis/handbook.api.js';
 import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js';
+// @ts-ignore
+import filesBackup from './assets/files-backup.json' with { type: 'json' };
 
 (async () => {
     let allFiles = [];
@@ -55,6 +57,10 @@ import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js'
     toggleVisibility(false, loadingIconEl);
 
     allFiles = Array.isArray(filesListRes) ? filesListRes : [];
+    if (allFiles.length <= 0) {
+        allFiles = Array.isArray(filesBackup) ? filesBackup : [];
+    }
+
     allFiles.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 })();
 
