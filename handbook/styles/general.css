@@ -146,6 +146,12 @@ mark {
     /* 0 0 0 0.25rem rgba(79,198,193,.25); */
 }
 
+#handbook-files-list a:focus {
+    outline: solid 0.0625rem var(--bs-gray-400);
+    outline-offset: -0.0313rem;
+    background-color: var(--bs-gray-100);
+}
+
 .shadow-custom {
     box-shadow: 0 0.3125rem 0.625rem -0.625rem rgba(0, 0, 0, 0.3);
 }

@@ -50,6 +50,40 @@ import filesBackup from './assets/files-backup.json' with { type: 'json' };
         searchInputEl.focus();
     });
 
+    // Set event listener for arrow key navigation through results
+    [searchInputEl, handbookFilesListEl].forEach((el) => {
+        el.addEventListener('keydown', (/** @type {KeyboardEvent} */evt) => {
+            if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+                evt.preventDefault();
+
+                const items = /** @type {NodeListOf<HTMLAnchorElement>} */ (handbookFilesListEl.querySelectorAll('a'));
+                if (items.length === 0) {
+                    return;
+                }
+
+                const currentFocus = document.activeElement;
+                let index;
+                if (currentFocus === searchInputEl || !handbookFilesListEl.contains(currentFocus)) {
+                    index = evt.key === 'ArrowDown' ? 0 : items.length - 1;
+                } else {
+                    index = Array.from(items).indexOf(/** @type {HTMLAnchorElement} */(currentFocus));
+                    index = evt.key === 'ArrowDown' ? index + 1 : index - 1;
+
+                    if (index < 0) {
+                        searchInputEl.focus();
+                        return;
+                    }
+
+                    if (index >= items.length) {
+                        index = 0;
+                    }
+                }
+
+                items[index]?.focus();
+            }
+        });
+    });
+
     // Go fetch handbook file list
     const { getAll } = useHandbookApi();
     toggleVisibility(true, loadingIconEl);
@@ -118,6 +152,12 @@ function setHeaderImage(imgEl) {
             start: new Date(`December 25, ${currentYear}, 12:00 AM`),
             end: new Date(`December 28, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-christmas.png'
+        },
+        {
+            holiday: 'Valentines Day',
+            start: new Date(`February 12, ${currentYear}, 12:00 AM`),
+            end: new Date(`February 15, ${currentYear}, 12:00 AM`),
+            imgSrc: './assets/germ-nobg-valentines.png'
         }
     ];
 
@@ -216,17 +256,25 @@ function updateDomList(searchTerm, filteredList, unorderedListElem) {
         unorderedListElem.classList.remove('d-none');
     }
 
-    for (const file of filteredList) {
+    for (const [index, file] of filteredList.entries()) {
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'list-group-item-action', 'p-0');
 
-        const encodedStr = `
-            <a target="_blank" href="${file.url}" class="d-block text-decoration-none text-black px-3 py-2">
-                ${highlightMatchingText(searchTerm, encodeHtmlString(file.name))}
-            </a>
-        `;
+        const a = document.createElement('a');
+        a.target = '_blank';
+        a.href = file.url;
+        a.classList.add('d-block', 'text-decoration-none', 'text-black', 'px-3', 'py-2');
+        a.innerHTML = highlightMatchingText(searchTerm, encodeHtmlString(file.name));
 
-        li.innerHTML = encodedStr;
+        if (index === 0) {
+            a.style.borderTopLeftRadius = 'var(--bs-border-radius-xl)';
+            a.style.borderTopRightRadius = 'var(--bs-border-radius-xl)';
+        } else if (index === filteredList.length - 1) {
+            a.style.borderBottomLeftRadius = 'var(--bs-border-radius-xl)';
+            a.style.borderBottomRightRadius = 'var(--bs-border-radius-xl)';
+        }
+
+        li.appendChild(a);
         unorderedListElem.appendChild(li);
     }
 }
