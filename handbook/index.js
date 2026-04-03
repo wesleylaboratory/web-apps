@@ -2,6 +2,7 @@ import { useHandbookApi } from './apis/handbook.api.js';
 import { encodeHtmlString, highlightMatchingText } from './utils/string.util.js';
 // @ts-ignore
 import filesBackup from './assets/files-backup.json' with { type: 'json' };
+import { easterByYear } from './utils/date.util.js';
 
 (async () => {
     let allFiles = [];
@@ -166,6 +167,16 @@ function setHeaderImage(imgEl) {
             imgSrc: './assets/germ-nobg-stpatricks.png'
         }
     ];
+
+    const easterDate = easterByYear(currentYear);
+    if (easterDate instanceof Date) {
+        datesToCheck.push({
+            holiday: 'Easter',
+            start: new Date(easterDate.getTime() - (1000 * 60 * 60 * 24 * 5)), // 5 days before Easter
+            end: easterDate,
+            imgSrc: './assets/germ-nobg-easter.png'
+        });
+    }
 
     const now = new Date();
     const holidayToShow = datesToCheck.find(date => now >= date.start && now <= date.end);
