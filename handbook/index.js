@@ -170,10 +170,13 @@ function setHeaderImage(imgEl) {
 
     const easterDate = easterByYear(currentYear);
     if (easterDate instanceof Date) {
+        const easterEndOfDay = new Date(easterDate.getTime());
+        easterEndOfDay.setHours(23, 59, 59, 999);
+
         datesToCheck.push({
             holiday: 'Easter',
-            start: new Date(easterDate.getTime() - (1000 * 60 * 60 * 24 * 5)), // 5 days before Easter
-            end: easterDate,
+            start: new Date(easterDate.getTime() - (1000 * 60 * 60 * 24 * 3)), // 3 days before Easter
+            end: easterEndOfDay,
             imgSrc: './assets/germ-nobg-easter.png'
         });
     }
