@@ -165,6 +165,12 @@ function setHeaderImage(imgEl) {
             start: new Date(`March 17, ${currentYear}, 12:00 AM`),
             end: new Date(`March 18, ${currentYear}, 12:00 AM`),
             imgSrc: './assets/germ-nobg-stpatricks.png'
+        },
+        {
+            holiday: `Independence Day`,
+            start: new Date(`July 4, ${currentYear}, 12:00 AM`),
+            end: new Date(`July 5, ${currentYear}, 12:00 AM`),
+            imgSrc: './assets/germ-nobg-independenceday.png'
         }
     ];
 
